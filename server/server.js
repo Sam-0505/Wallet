@@ -1,9 +1,15 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const cors = require("cors")
+const jwt = require("json-web-token")
+
+const userModel = require("./models/userModel")
 dotenv.config();
 
 const app = express();
+app.use(express.json());
+app.use(cors());
 
 mongoose
     .connect(process.env.URI)
@@ -20,4 +26,8 @@ app.get("/",(req,res)=>{
     res.send("api running");
 });
 
-//app.listen(3000);
+app.post("/register",(req,res)=>{
+    userModel.create(req.body)
+    .then(UserData => res.json(UserData))
+    .catch(err=>res.json(err))
+})

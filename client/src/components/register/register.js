@@ -1,10 +1,11 @@
 import React, { useState } from "react"
 import "./register.css"
-//import { useHistory } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import axios from 'axios';
 
 const Register = () => {
 
-    //const history = useHistory()
+    const history = useNavigate()
 
     const [ user, setUser] = useState({
         name: "",
@@ -22,16 +23,16 @@ const Register = () => {
     }
 
     const register = () => {
-        //const { name, email, password, reEnterPassword } = user
-        // if( name && email && password && (password === reEnterPassword)){
-        //     axios.post("http://localhost:9002/register", user)
-        //     .then( res => {
-        //         alert(res.data.message)
-        //         history.push("/login")
-        //     })
-        // } else {
-        //     alert("invlid input")
-        // }
+        const { name, email, password, reEnterPassword } = user
+        if( name && email && password && (password === reEnterPassword)){
+            axios.post("http://localhost:9002/register", {name,email,password})
+            .then( res => {
+                alert(res.data.message)
+                history("/login")
+            })
+        } else {
+            alert("invalid input")
+        }
     }
 
     return (
