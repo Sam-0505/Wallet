@@ -2,7 +2,9 @@ const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors")
-const jwt = require("json-web-token")
+const bcrypt = require("bcryptjs")
+//const jwt = require("json-web-token")
+var jwt = require('jsonwebtoken');
 
 const userModel = require("./models/userModel");
 const userData = require("./models/userModel");
@@ -29,22 +31,42 @@ app.get("/",(req,res)=>{
 
 app.post("/register",async (req,res)=>{
 
-    const { name, email, password } = req.body;
+    try{
+        const { name, email, password} = req.body;
 
-    // Validate user input
-    if (!(email && password && name)) {
-      res.status(400).send("All input is required");
+        // Validate user input
+        if (!(email && password && name)) {
+        return res.status(400).send("All input is required");
+        }
+
+        // check if user already exist
+        // Validate if user exist in our database
+        const oldUser = await userModel.findOne({ email });
+
+        if (oldUser) {
+        return res.status(400).send("User Already Exist. Please Login");
+        }
+
+        //Encrypt user password
+        encryptedPassword = await bcrypt.hash(password, 10);
+
+        const token = await jwt.sign(
+            {email },
+            process.env.TOKEN_KEY,
+            {
+            expiresIn: "2h",
+            }
+        );
+
+        const user = await userModel.create({name : name, email : email, password: encryptedPassword, token: token})
+        .then(UserData => res.json(UserData))
+        .catch(err=>res.json(err));
+
+        // return new user
+        res.status(201).json(user);
     }
-
-    // check if user already exist
-    // Validate if user exist in our database
-    const oldUser = await userModel.findOne({ email });
-
-    if (oldUser) {
-      return res.status(400).send("User Already Exist. Please Login");
-    }
-
-    const user = await userModel.create(req.body)
-    .then(UserData => res.json(UserData))
-    .catch(err=>res.json(err))
+    catch (err) {
+        console.log(err);
+      }
+    
 })
