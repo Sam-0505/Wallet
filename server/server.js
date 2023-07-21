@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const cors = require("cors")
 const jwt = require("json-web-token")
 
-const userModel = require("./models/userModel")
+const userModel = require("./models/userModel");
+const userData = require("./models/userModel");
 dotenv.config();
 
 const app = express();
@@ -26,8 +27,24 @@ app.get("/",(req,res)=>{
     res.send("api running");
 });
 
-app.post("/register",(req,res)=>{
-    userModel.create(req.body)
+app.post("/register",async (req,res)=>{
+
+    const { name, email, password } = req.body;
+
+    // Validate user input
+    if (!(email && password && name)) {
+      res.status(400).send("All input is required");
+    }
+
+    // check if user already exist
+    // Validate if user exist in our database
+    const oldUser = await userModel.findOne({ email });
+
+    if (oldUser) {
+      return res.status(400).send("User Already Exist. Please Login");
+    }
+
+    const user = await userModel.create(req.body)
     .then(UserData => res.json(UserData))
     .catch(err=>res.json(err))
 })
