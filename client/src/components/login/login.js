@@ -1,11 +1,11 @@
 import React, {useState} from "react"
 import "./login.css"
-//import axios from "axios"
-//import { useHistory } from "react-router-dom"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 const Login = ({ setLoginUser}) => {
 
-    //const history = useHistory()
+    const nav = useNavigate()
 
     const [ user, setUser] = useState({
         email:"",
@@ -21,12 +21,11 @@ const Login = ({ setLoginUser}) => {
     }
 
     const login = () => {
-        // axios.post("http://localhost:9002/login", user)
-        // .then(res => {
-        //     alert(res.data.message)
-        //     setLoginUser(res.data.user)
-        //     history.push("/")
-        // })
+        axios.post("http://localhost:9002/login", user)
+        .then(res => {
+            alert(res.data.message)
+            nav("/")
+        })
     }
 
     return (
