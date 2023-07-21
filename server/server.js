@@ -50,25 +50,26 @@ app.post("/register",async (req,res)=>{
         //Encrypt user password
         encryptedPassword = await bcrypt.hash(password, 10);
 
+        const user = await userModel.create({name : name, email : email, password: encryptedPassword})
+        .then(UserData => res.json(UserData))
+        .catch(err=>res.json(err));
+
         const token = await jwt.sign(
-            {email },
+            {user_id: user._id, email },
             process.env.TOKEN_KEY,
             {
             expiresIn: "2h",
             }
         );
 
-        const user = await userModel.create({name : name, email : email, password: encryptedPassword, token: token})
-        .then(UserData => res.json(UserData))
-        .catch(err=>res.json(err));
+        user.token = token;
 
         // return new user
         res.status(201).json(user);
     }
     catch (err) {
         console.log(err);
-      }
-    
+    }
 })
 
 app.post("/login", async (req, res) => {
@@ -88,7 +89,7 @@ app.post("/login", async (req, res) => {
       if (user && (await bcrypt.compare(password, user.password))) {
         // Create token
         const token = jwt.sign(
-          { email },
+          { user_id: user._id, email },
           process.env.TOKEN_KEY,
           {
             expiresIn: "2h",
