@@ -1,29 +1,17 @@
-// import logo from './logo.svg';
-// import './App.css';
-// import './components/register/register'
-// import Register from './components/register/register';
-// import Login from './components/login/login';
-
-// function App() {
-//   return (
-//     <Register></Register>,
-//     <Login></Login>
-//   );
-// }
-
-// export default App;
-
 import './App.css'
 import Homepage from "./components/homepage/homepage"
 import Login from "./components/login/login"
 import Register from "./components/register/register"
+import Dashboard from './components/dashboard/dashboard'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from 'react';
+import { UserContextProvider } from './components/userContext';
 
 function App() {
   const [ user, setLoginUser] = useState({})
   return (
     <div className="App">
+      <UserContextProvider>
       <Router>
         <Routes>
           <Route exact path="/" element={<Homepage />}>
@@ -32,8 +20,11 @@ function App() {
           </Route>
           <Route path="/register" element={<Register />}>
           </Route>
+          <Route path="/dashboard" element={<Dashboard />}>
+          </Route>
         </Routes>
       </Router>
+      </UserContextProvider>
     </div>
   );
 }

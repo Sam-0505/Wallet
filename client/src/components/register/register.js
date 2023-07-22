@@ -25,7 +25,7 @@ const Register = () => {
     const register = () => {
         const { name, email, password, reEnterPassword } = user
         if( name && email && password && (password === reEnterPassword)){
-            axios.post("http://localhost:9002/register", {name,email,password})
+            axios.post("http://localhost:9002/register", {name,email,password},{ withCredentials: true })
             .then( res => {
                 alert(res.data.message)
                 history("/login")

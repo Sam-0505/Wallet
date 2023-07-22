@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
-//const jwt = require("json-web-token")
+const cookieParser = require('cookie-parser')
 var jwt = require('jsonwebtoken');
 
 const userModel = require("./models/userModel");
@@ -12,7 +12,11 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    credentials:true,
+    origin: "http://localhost:3000"
+}));
+app.use(cookieParser());
 
 mongoose
     .connect(process.env.URI)
@@ -54,15 +58,15 @@ app.post("/register",async (req,res)=>{
         .then(UserData => res.json(UserData))
         .catch(err=>res.json(err));
 
-        const token = await jwt.sign(
-            {user_id: user._id, email },
-            process.env.TOKEN_KEY,
-            {
-            expiresIn: "2h",
-            }
-        );
+        // const token = await jwt.sign(
+        //     {user_id: user._id, email },
+        //     process.env.TOKEN_KEY,
+        //     {
+        //     expiresIn: "2h",
+        //     }
+        // );
 
-        user.token = token;
+        // user.token = token;
 
         // return new user
         res.status(201).json(user);
@@ -89,22 +93,46 @@ app.post("/login", async (req, res) => {
       if (user && (await bcrypt.compare(password, user.password))) {
         // Create token
         const token = jwt.sign(
-          { user_id: user._id, email },
+          { user_id: user._id, name:user.name,email},
           process.env.TOKEN_KEY,
           {
             expiresIn: "2h",
+          },
+          (err, token)=>{
+            if(err)
+              throw err;
+            res.cookie('token',token).json(user);
           }
         );
-  
-        // save user token
-        user.token = token;
+        // // save user token
+        // user.token = token;
   
         // user
-        res.status(200).json(user);
-      }
-      res.status(400).send("Invalid Credentials");
-    } catch (err) {
+        //res.status(200).json(user);
+    }else{
+      res.json("Invalid Credentials");
+    } 
+  }
+    catch (err) {
       console.log(err);
     }
     // Our register logic ends here
   });
+
+app.get("/profile",(req,res)=>{
+  const {token}=req.cookies;
+
+  if(token)
+  {
+    jwt.verify(token,process.env.TOKEN_KEY,{
+      expiresIn: "2h",
+    },(err,user)=>{
+      if(err)
+        throw err;
+      res.json(user);
+    });
+  }
+  else{
+    res.json("Profile is not updated");
+  }
+})
