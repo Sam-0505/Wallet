@@ -145,7 +145,7 @@ app.post("/sendMoney",async(req, res)=>{
   try{
     const{user, send} = req.body;
     
-    await userModel.updateOne({email:"p"},{name:"p"})
+    await userModel.updateOne({email:send.sendEmail},{$inc:{balance:send.sendAmount}})
     .then(UserData => res.json(UserData))
     .catch(err=>res.json(err));
 
