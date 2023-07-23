@@ -150,6 +150,12 @@ app.post("/sendMoney",async(req, res)=>{
     if (!receiver) {
     return res.status(400).send("No receiver exsits");
     }
+
+    const receiveMoney = await userModel.findOne({email:user.email,balance:{$gt:send.sendAmount}})
+
+    if (!receiveMoney) {
+      return res.status(400).send("Sender does not have enough money");
+    }
     
     await userModel.updateOne({email:send.sendEmail},{$inc:{balance:send.sendAmount}})
     .then()
