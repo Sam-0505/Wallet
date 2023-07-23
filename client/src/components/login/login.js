@@ -8,7 +8,7 @@ const Login = ({ setLoginUser}) => {
 
     const {globUser, setGlobUser} = useContext(UserContext);
 
-    const nav = useNavigate()
+    const nav = useNavigate();
 
     const [ user, setUser] = useState({
         email:"",

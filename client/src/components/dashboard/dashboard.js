@@ -2,9 +2,13 @@ import { useState, useContext } from "react";
 import { UserContext } from "../userContext";
 import axios from "axios"
 import "./dashboard.css"
+import { useNavigate } from "react-router-dom"
+//import { set } from "mongoose";
 
 export default function Dashboard(){
     const {globUser,setGlobUser} = useContext(UserContext);
+
+    const nav = useNavigate();
 
     const [send, setSend] = useState({
         sendEmail:"",
@@ -37,6 +41,12 @@ export default function Dashboard(){
         })
     }
 
+    function logOut()
+    {
+        setGlobUser(null);
+        nav('/');
+    }
+
     return (<div className="dashboard">
         <h1>Dashboard</h1>
         {!! globUser && (<h2>Hi {globUser.name} !!</h2>)}
@@ -45,5 +55,6 @@ export default function Dashboard(){
         <input type="text" name="sendAmount" value={send.sendAmount} onChange={handleChange} placeholder="Enter Amount" ></input>
         <div className="button" onClick={sendMoney}>Send Money</div>
         <div className="button" onClick={showTrans}>Show Transactions</div>
+        <div className="button" onClick={logOut}>Logout</div>
     </div>)
 }

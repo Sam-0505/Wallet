@@ -121,52 +121,33 @@ app.post("/login", async (req, res) => {
     // Our register logic ends here
   });
 
-app.get("/profile",(req,res)=>{
-  const {token}=req.cookies;
-  try{
-    if(token)
-    {
-      jwt.verify(token,process.env.TOKEN_KEY,{
-        expiresIn: "2h",
-      },(err,user)=>{
-        if(err)
-          throw err;
-        res.json(user);
-      });
-    }
-  }
-  catch{
-    console.log(err);
-  }
-})
-
 app.post("/sendMoney",async(req, res)=>{
   //res.json("Hello");
   try{
-    const{user, send} = req.body;
+    const{globUser, send} = req.body;
 
     const receiver = await userModel.findOne({ email: send.sendEmail });
 
     if (!receiver) {
-    return res.status(400).send("No receiver exsits");
+    return res.send("No receiver exsits");
     }
 
-    const receiveMoney = await userModel.findOne({email:user.email,balance:{$gt:send.sendAmount}})
+    const receiveMoney = await userModel.findOne({email: globUser.email,balance:{$gt:send.sendAmount}})
 
     if (!receiveMoney) {
-      return res.status(400).send("Sender does not have enough money");
+      return res.send("Sender does not have enough money");
     }
     
     await userModel.updateOne({email:send.sendEmail},{$inc:{balance:send.sendAmount}})
     .then()
     .catch(err=>res.json(err));
 
-    await userModel.updateOne({email:user.email},{$inc:{balance:-send.sendAmount}})
+    await userModel.updateOne({email:globUser.email},{$inc:{balance:-send.sendAmount}})
     .then()
     .catch(err=>res.json(err));
 
-    transModel.create({source: user.email, destination: send.sendEmail, amount:send.sendAmount})
-    .then(transData => res.json("Transaction is noted"))
+    transModel.create({source: globUser.email, destination: send.sendEmail, amount:send.sendAmount})
+    .then(transData => res.json("Transaction Completed"))
     .catch(err=>res.json(err));
   }
   catch(err){
