@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser')
 var jwt = require('jsonwebtoken');
 
 const userModel = require("./models/userModel");
-const userData = require("./models/userModel");
+const transModel = require("./models/transModel");
 dotenv.config();
 
 const app = express();
@@ -55,7 +55,7 @@ app.post("/register",async (req,res)=>{
         //Encrypt user password
         encryptedPassword = await bcrypt.hash(password, 10);
 
-        const user = await userModel.create({name : name, email : email, password: encryptedPassword})
+        const user = await userModel.create({name : name, email : email, password: encryptedPassword, balance: 1000})
         .then(UserData => res.json(UserData))
         .catch(err=>res.json(err));
 
@@ -141,15 +141,19 @@ app.get("/profile",(req,res)=>{
 })
 
 app.post("/sendMoney",async(req, res)=>{
-  res.json("Hello");
-  // try{
-  // const{user, send} = req.body;
+  //res.json("Hello");
+  try{
+    const{user, send} = req.body;
+    
+    await userModel.updateOne({email:"p"},{name:"p"})
+    .then(UserData => res.json(UserData))
+    .catch(err=>res.json(err));
 
-  //   const trans = await transModel.create({source: user.email, destination: send.sendEmail, amount:send.sendAmount, state:"initial"})
-  //   .then(transData => res.json(transData))
-  //   .catch(err=>res.json(err));
-  // }
-  // catch(err){
-  //   res.json(err);
-  // }
+    const trans = await transModel.create({source: user.email, destination: send.sendEmail, amount:send.sendAmount})
+    .then(transData => res.json(transData))
+    .catch(err=>res.json(err));
+  }
+  catch(err){
+    res.json(err);
+  }
 })

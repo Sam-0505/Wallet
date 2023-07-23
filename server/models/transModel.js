@@ -3,28 +3,23 @@ const mongoose = require("mongoose");
 //Create Schema
 const userDataSchema = new mongoose.Schema(
   {
-    name: {
+    source: {
       type: String,
       required: true,
     },
-    email: {
+    destination: {
       type: String,
-      unique: true,
       required: true,
     },
-    password:{
-        type: String,
+    amount:{
+        type: Number,
         required: true
     },
-    balance:{
-      type:Number,
-      required: true
-    }
   },
   { timestamps: true }
 );
 
 //Create Model
-const userData = mongoose.model("UserData", userDataSchema);
+const transData = mongoose.model("trans", userDataSchema);
 
-module.exports = userData;
+module.exports = transData;
