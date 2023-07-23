@@ -146,15 +146,15 @@ app.post("/sendMoney",async(req, res)=>{
     const{user, send} = req.body;
     
     await userModel.updateOne({email:send.sendEmail},{$inc:{balance:send.sendAmount}})
-    .then(UserData => res.json(UserData))
+    .then()
     .catch(err=>res.json(err));
 
     await userModel.updateOne({email:user.email},{$inc:{balance:-send.sendAmount}})
-    .then(UserData => res.json(UserData))
+    .then()
     .catch(err=>res.json(err));
 
-    const trans = await transModel.create({source: user.email, destination: send.sendEmail, amount:send.sendAmount})
-    .then(transData => res.json(transData))
+    transModel.create({source: user.email, destination: send.sendEmail, amount:send.sendAmount})
+    .then(transData => res.json("Transaction is noted"))
     .catch(err=>res.json(err));
   }
   catch(err){
