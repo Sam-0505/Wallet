@@ -30,6 +30,7 @@ mongoose
     .catch((error)=>console.log("Failed to connect",error));
 
 app.get("/",(req,res)=>{
+    res.clearCookie('token');
     res.send("api running");
 });
 
@@ -78,6 +79,7 @@ app.post("/register",async (req,res)=>{
 
 app.post("/login", async (req, res) => {
 
+    res.clearCookie('token');
     // Our login logic starts here
     try {
       // Get user input
@@ -121,18 +123,33 @@ app.post("/login", async (req, res) => {
 
 app.get("/profile",(req,res)=>{
   const {token}=req.cookies;
+  try{
+    if(token)
+    {
+      jwt.verify(token,process.env.TOKEN_KEY,{
+        expiresIn: "2h",
+      },(err,user)=>{
+        if(err)
+          throw err;
+        res.json(user);
+      });
+    }
+  }
+  catch{
+    console.log(err);
+  }
+})
 
-  if(token)
-  {
-    jwt.verify(token,process.env.TOKEN_KEY,{
-      expiresIn: "2h",
-    },(err,user)=>{
-      if(err)
-        throw err;
-      res.json(user);
-    });
-  }
-  else{
-    res.json("Profile is not updated");
-  }
+app.post("/sendMoney",async(req, res)=>{
+  res.json("Hello");
+  // try{
+  // const{user, send} = req.body;
+
+  //   const trans = await transModel.create({source: user.email, destination: send.sendEmail, amount:send.sendAmount, state:"initial"})
+  //   .then(transData => res.json(transData))
+  //   .catch(err=>res.json(err));
+  // }
+  // catch(err){
+  //   res.json(err);
+  // }
 })

@@ -1,8 +1,12 @@
 import React from "react"
 import {Link} from 'react-router-dom'
 import "./homepage.css"
+import axios from "axios"
 
 const Homepage = ({setLoginUser}) => {
+
+    axios.get("http://localhost:9002/", { withCredentials: true });
+
     return (
         <div className="homepage">
             <h1>Hello Homepage</h1>
