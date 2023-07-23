@@ -98,10 +98,10 @@ app.post("/login", async (req, res) => {
           {
             expiresIn: "2h",
           },
-          (err, token)=>{
+          (err, newToken)=>{
             if(err)
               throw err;
-            res.cookie('token',token).json(user);
+            res.cookie('token',newToken).json(user);
           }
         );
         // // save user token
