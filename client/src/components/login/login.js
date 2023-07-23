@@ -1,9 +1,12 @@
-import React, {useState} from "react"
+import React, {useState, useContext} from "react"
 import "./login.css"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import { UserContext } from "../userContext";
 
 const Login = ({ setLoginUser}) => {
+
+    const {globUser, setGlobUser} = useContext(UserContext);
 
     const nav = useNavigate()
 
@@ -23,7 +26,8 @@ const Login = ({ setLoginUser}) => {
     const login = () => {
         axios.post("http://localhost:9002/login", user,{ withCredentials: true })
         .then(res => {
-            alert(res.data.message)
+            console.log(res.data);
+            setGlobUser(res.data);
             nav("/dashboard")
         })
     }

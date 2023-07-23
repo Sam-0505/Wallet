@@ -5,7 +5,7 @@ import axios from "axios"
 
 const Homepage = ({setLoginUser}) => {
 
-    axios.get("http://localhost:9002/", { withCredentials: true });
+    //axios.get("http://localhost:9002/", { withCredentials: true });
 
     return (
         <div className="homepage">
