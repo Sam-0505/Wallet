@@ -9,13 +9,13 @@ const Homepage = ({setLoginUser}) => {
 
     return (
         <div className="homepage">
-            <h1>Hello Homepage</h1>
+            <h1>DummyPe</h1>
             {/* <div className="button" onClick={() => setLoginUser({})} >Logout</div> */}
             <Link to="/login">
-                <button>Login</button>
+                <div className="button">Login</div>
             </Link>
             <Link to="/register">
-                <button>Register</button>
+                <div className="button">Register</div>
             </Link>
         </div>
     )

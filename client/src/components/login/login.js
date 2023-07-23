@@ -28,7 +28,7 @@ const Login = ({ setLoginUser}) => {
         .then(res => {
             console.log(res.data);
             setGlobUser(res.data);
-            nav("/dashboard")
+            nav("/dashboard");
         })
     }
 

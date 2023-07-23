@@ -41,7 +41,7 @@ app.post("/register",async (req,res)=>{
 
         // Validate user input
         if (!(email && password && name)) {
-        return res.status(400).send("All input is required");
+        return res.send("All input is required");
         }
 
         // check if user already exist
@@ -49,28 +49,15 @@ app.post("/register",async (req,res)=>{
         const oldUser = await userModel.findOne({ email });
 
         if (oldUser) {
-        return res.status(400).send("User Already Exist. Please Login");
+        return res.send("User Already Exist. Please Login");
         }
 
         //Encrypt user password
         encryptedPassword = await bcrypt.hash(password, 10);
 
         const user = await userModel.create({name : name, email : email, password: encryptedPassword, balance: 1000})
-        .then(UserData => res.json(UserData))
+        .then(UserData => res.json("You are logged In"))
         .catch(err=>res.json(err));
-
-        // const token = await jwt.sign(
-        //     {user_id: user._id, email },
-        //     process.env.TOKEN_KEY,
-        //     {
-        //     expiresIn: "2h",
-        //     }
-        // );
-
-        // user.token = token;
-
-        // return new user
-        res.status(201).json(user);
     }
     catch (err) {
         console.log(err);
@@ -87,7 +74,7 @@ app.post("/login", async (req, res) => {
   
       // Validate user input
       if (!(email && password)) {
-        res.status(400).send("All input is required");
+        res.send("All input is required");
       }
       // Validate if user exist in our database
       const user = await userModel.findOne({ email });
@@ -103,14 +90,9 @@ app.post("/login", async (req, res) => {
           (err, newToken)=>{
             if(err)
               throw err;
-            res.cookie('token',newToken).cookie('name',user.name).json(user);
+            res.json(user);
           }
         );
-        // // save user token
-        // user.token = token;
-  
-        // user
-        //res.status(200).json(user);
     }else{
       res.json("Invalid Credentials");
     } 
