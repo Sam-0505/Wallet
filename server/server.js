@@ -144,6 +144,12 @@ app.post("/sendMoney",async(req, res)=>{
   //res.json("Hello");
   try{
     const{user, send} = req.body;
+
+    const receiver = await userModel.findOne({ email: send.sendEmail });
+
+    if (!receiver) {
+    return res.status(400).send("No receiver exsits");
+    }
     
     await userModel.updateOne({email:send.sendEmail},{$inc:{balance:send.sendAmount}})
     .then()
