@@ -103,7 +103,7 @@ app.post("/login", async (req, res) => {
           (err, newToken)=>{
             if(err)
               throw err;
-            res.cookie('token',newToken).json(user);
+            res.cookie('token',newToken).cookie('name',user.name).json(user);
           }
         );
         // // save user token
@@ -172,4 +172,12 @@ app.post("/sendMoney",async(req, res)=>{
   catch(err){
     res.json(err);
   }
+})
+
+app.post("/showTrans",async(req, res)=>{
+  const {user} = req.body;
+  
+  const list = await transModel.find({$or: [{source:user.name},{destination:user.name}]});
+
+  res.json(list);
 })

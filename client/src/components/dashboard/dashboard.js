@@ -25,7 +25,15 @@ export default function Dashboard(){
     {
         axios.post("http://localhost:9002/sendMoney", {user, send},{ withCredentials: true })
         .then(res => {
-            alert(res.data.message)
+            alert(res.data)
+        })
+    }
+
+    function showTrans()
+    {
+        axios.post("http://localhost:9002/showTrans",{user},{ withCredentials: true })
+        .then(res => {
+            console.log(res.data)
         })
     }
 
@@ -36,5 +44,6 @@ export default function Dashboard(){
         <input type="text" name="sendEmail" value={send.sendEmail} onChange={handleChange} placeholder="Enter Sender Email"></input>
         <input type="text" name="sendAmount" value={send.sendAmount} onChange={handleChange} placeholder="Enter Amount" ></input>
         <div className="button" onClick={sendMoney}>Send Money</div>
+        <div className="button" onClick={showTrans}>Show Transactions</div>
     </div>)
 }
