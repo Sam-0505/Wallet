@@ -26,9 +26,14 @@ const Login = ({ setLoginUser}) => {
     const login = () => {
         axios.post("http://localhost:9002/login", user,{ withCredentials: true })
         .then(res => {
-            console.log(res.data);
-            setGlobUser(res.data);
-            nav("/dashboard");
+            if(res.data != "Invalid Credentials")
+            {
+                setGlobUser(res.data);
+                nav("/dashboard");
+            }
+            else{
+                alert(res.data);
+            }
         })
     }
 

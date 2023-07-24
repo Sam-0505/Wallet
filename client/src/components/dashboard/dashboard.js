@@ -43,16 +43,7 @@ export default function Dashboard(){
         .then(res => {
             setCollectionData(res.data)
         })
-    },[globUser]);
-
-    // function showTrans()
-    // {
-    //     axios.post("http://localhost:9002/showTrans",{globUser},{ withCredentials: true })
-    //     .then(res => {
-    //         console.log(res.data)
-    //         setCollectionData(res.data)
-    //     })
-    // }
+    },[globUser,currBal]);
 
     function logOut()
     {
