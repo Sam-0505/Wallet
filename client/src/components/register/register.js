@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const Register = () => {
 
-    const history = useNavigate()
+    const nav = useNavigate()
 
     const [ user, setUser] = useState({
         name: "",
@@ -29,11 +29,15 @@ const Register = () => {
             .then( res => {
                 alert(res.data)
                 if(res.data == "You are logged In")
-                    history("/login");
+                    nav("/login");
             })
         } else {
             alert("invalid input")
         }
+    }
+
+    const home = ()=>{
+        nav("/");
     }
 
     return (
@@ -46,7 +50,7 @@ const Register = () => {
             <input type="password" name="reEnterPassword" value={user.reEnterPassword} placeholder="Re-enter Password" onChange={ handleChange }></input>
             <div className="button" onClick={register} >Register</div>
             <div>or</div>
-            <div className="button" >Login</div>
+            <div className="button" onClick={home}>Home</div>
         </div>
     )
 }

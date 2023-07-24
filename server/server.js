@@ -138,9 +138,9 @@ app.post("/sendMoney",async(req, res)=>{
 })
 
 app.post("/showTrans",async(req, res)=>{
-  const {user} = req.body;
+  const {globUser} = req.body;
   
-  const list = await transModel.find({$or: [{source:user.name},{destination:user.name}]});
+  const list = await transModel.find({$or: [{source:globUser.name},{destination:globUser.name}]});
 
   res.json(list);
 })

@@ -32,6 +32,10 @@ const Login = ({ setLoginUser}) => {
         })
     }
 
+    const home = ()=>{
+        nav("/");
+    }
+
     return (
         <div className="login">
             <h1>Login</h1>
@@ -39,7 +43,7 @@ const Login = ({ setLoginUser}) => {
             <input type="password" name="password" value={user.password} onChange={handleChange}  placeholder="Enter your Password" ></input>
             <div className="button" onClick={login}>Login</div>
             <div>or</div>
-            <div className="button">Register</div>
+            <div className="button" onClick={home}>Home</div>
         </div>
     )
 }
