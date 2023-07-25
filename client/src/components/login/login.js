@@ -29,6 +29,7 @@ const Login = ({ setLoginUser}) => {
             if(res.data != "Invalid Credentials")
             {
                 setGlobUser(res.data.userData);
+                localStorage.setItem('token',JSON.stringify(res.data.userToken));
                 nav("/dashboard");
             }
             else{

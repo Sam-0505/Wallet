@@ -34,6 +34,7 @@ app.get("/",(req,res)=>{
     res.send("api running");
 });
 
+
 app.post("/register",async (req,res)=>{
 
     try{
@@ -64,9 +65,29 @@ app.post("/register",async (req,res)=>{
     }
 })
 
+const verifyToken = (req, res, next) => {
+  const token =req.body.token || req.query.token || req.headers["x-access-token"];
+
+  if (!token) {
+    return res.status(403).send("A token is required for authentication");
+  }
+  try {
+    const decoded = jwt.verify(JSON.parse(token), process.env.TOKEN_KEY,{
+      expiresIn: "2h",
+    });
+    req.user = decoded;
+  } catch (err) {
+    return res.status(401).send("Invalid Token");
+  }
+  return next();
+};
+
+app.post("/auth",verifyToken,async(req,res)=>{
+  res.status(200).send("Welcome 🙌 ");
+})
+
 app.post("/login", async (req, res) => {
 
-    res.clearCookie('token');
     // Our login logic starts here
     try {
       // Get user input
@@ -82,7 +103,7 @@ app.post("/login", async (req, res) => {
       if (user && (await bcrypt.compare(password, user.password))) {
         // Create token
         const token = jwt.sign(
-          { user_id: user._id, name:user.name,email},
+          { user_id: user._id, name:user.name,email:email},
           process.env.TOKEN_KEY,
           {
             expiresIn: "2h",
