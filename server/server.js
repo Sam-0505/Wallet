@@ -90,7 +90,7 @@ app.post("/login", async (req, res) => {
           (err, newToken)=>{
             if(err)
               throw err;
-            res.json(user);
+            res.json({userData:user, userToken:newToken});
           }
         );
     }else{
@@ -140,7 +140,7 @@ app.post("/sendMoney",async(req, res)=>{
 app.post("/showTrans",async(req, res)=>{
   const {globUser} = req.body;
   
-  const list = await transModel.find({$or: [{source:globUser.name},{destination:globUser.name}]});
+  const list = await transModel.find({$or: [{source:globUser.email},{destination:globUser.email}]});
 
   res.json(list);
 })

@@ -28,11 +28,11 @@ const Login = ({ setLoginUser}) => {
         .then(res => {
             if(res.data != "Invalid Credentials")
             {
-                setGlobUser(res.data);
+                setGlobUser(res.data.userData);
                 nav("/dashboard");
             }
             else{
-                alert(res.data);
+                alert(res.data.userData);
             }
         })
     }
