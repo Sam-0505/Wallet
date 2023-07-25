@@ -19,8 +19,14 @@ const Homepage = ({setLoginUser}) => {
 
         axios.post("http://localhost:9002/auth", {token:val},{ withCredentials: true })
         .then(res => {
-                console.log(res.data);
-                nav('/login');
+            if(res.data!="Invalid Token" && res.data!="A token is required for authentication")
+            {
+                setGlobUser(res.data);
+                nav("/dashboard")
+            }
+            else{
+                nav("/login");
+            }
         });
     }
 

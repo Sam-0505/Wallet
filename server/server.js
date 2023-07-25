@@ -69,7 +69,7 @@ const verifyToken = (req, res, next) => {
   const token =req.body.token || req.query.token || req.headers["x-access-token"];
 
   if (!token) {
-    return res.status(403).send("A token is required for authentication");
+    return res.send("A token is required for authentication");
   }
   try {
     const decoded = jwt.verify(JSON.parse(token), process.env.TOKEN_KEY,{
@@ -77,13 +77,16 @@ const verifyToken = (req, res, next) => {
     });
     req.user = decoded;
   } catch (err) {
-    return res.status(401).send("Invalid Token");
+    return res.send("Invalid Token");
   }
   return next();
 };
 
 app.post("/auth",verifyToken,async(req,res)=>{
-  res.status(200).send("Welcome 🙌 ");
+
+  const x = req.user;
+  const title = await userModel.findOne({email:req.user.email});
+  res.status(200).send(title);
 })
 
 app.post("/login", async (req, res) => {
