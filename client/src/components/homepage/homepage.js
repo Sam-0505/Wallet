@@ -15,7 +15,7 @@ const Homepage = ({setLoginUser}) => {
     function logNav(){
 
         const val =localStorage.getItem('token');
-        console.log(val);
+        //console.log(val);
 
         axios.post("http://localhost:9002/auth", {token:val},{ withCredentials: true })
         .then(res => {
