@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"
 export default function Dashboard(){
     const {globUser,setGlobUser} = useContext(UserContext);
     const [currBal, setCurrBal] = useState(globUser.balance);
+    const [transData, setTransData] = useState([]);
     const [collectionData, setCollectionData] = useState([]);
 
     const nav = useNavigate();
@@ -41,6 +42,7 @@ export default function Dashboard(){
     useEffect(()=>{
         axios.post("http://localhost:9002/showTrans",{globUser},{ withCredentials: true })
         .then(res => {
+            setTransData(res.data);
             setCollectionData(res.data)
         })
     },[globUser,currBal]);
@@ -53,7 +55,7 @@ export default function Dashboard(){
 
     const filterTrans = (e) =>{
         var limit = e.target.value;
-        const result = collectionData.filter(trans => trans.amount>limit);
+        const result = transData.filter(trans => trans.amount>limit);
         setCollectionData(result);
     }
 
@@ -65,14 +67,14 @@ export default function Dashboard(){
         <input type="text" name="sendAmount" value={send.sendAmount} onChange={handleChange} placeholder="Enter Amount" ></input>
         <div className="button" onClick={sendMoney}>Send Money</div>
         {/* <div className="button" onClick={showTrans}>Show Transactions</div> */}
+        <div>
+        <h1>Transaction Data</h1>
         <select onChange={filterTrans}>
             <option value="50">Greater than 50</option>
             <option value="30">Greater than 30</option>
             <option value="10">Greater than 10</option>
             <option value="0">All transactions</option>
         </select>
-        <div>
-        <h1>Transaction Data</h1>
         <table>
             <thead>
             <tr>

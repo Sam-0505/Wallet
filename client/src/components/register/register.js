@@ -22,9 +22,19 @@ const Register = () => {
         })
     }
 
+    function isValidEmail(email) {
+        return /\S+@\S+\.\S+/.test(email);
+    }
+
     const register = () => {
         const { name, email, password, reEnterPassword } = user
-        if( name && email && password && (password === reEnterPassword)){
+
+        if(isValidEmail)
+        {
+            return alert("Please give a valid email address");
+        }
+
+        if( name && isValidEmail(email) && password && (password === reEnterPassword)){
             axios.post("http://localhost:9002/register", {name,email,password},{ withCredentials: true })
             .then( res => {
                 alert(res.data)
@@ -32,7 +42,7 @@ const Register = () => {
                     nav("/login");
             })
         } else {
-            alert("invalid input")
+            alert("Please verify the details")
         }
     }
 
