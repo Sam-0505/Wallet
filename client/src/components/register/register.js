@@ -23,26 +23,52 @@ const Register = () => {
     }
 
     function isValidEmail(email) {
+        
         return /\S+@\S+\.\S+/.test(email);
+    }
+
+    function checkPassStrength(inputtxt) 
+    { 
+        var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+        if(inputtxt.match(passw)) 
+        { 
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     const register = () => {
         const { name, email, password, reEnterPassword } = user
 
-        if(isValidEmail)
-        {
-            return alert("Please give a valid email address");
-        }
+        if( name && password && password && reEnterPassword){
 
-        if( name && isValidEmail(email) && password && (password === reEnterPassword)){
+            if(!isValidEmail(email))
+            {
+                return alert("Please give a valid email address");
+            }
+
+            if(password != reEnterPassword)
+            {
+                return alert("Passwords don't match");
+            }
+
+            if(!checkPassStrength(password))
+            {
+                return alert("Password should have 6-20 characters and atleast have a uppercase letter, a lower case letter and a numeric digit")
+            }
+
+
             axios.post("http://localhost:9002/register", {name,email,password},{ withCredentials: true })
             .then( res => {
                 alert(res.data)
-                if(res.data == "You are logged In")
+                if(res.data == "You are registered")
                     nav("/login");
             })
         } else {
-            alert("Please verify the details")
+            alert("Please fill all the details")
         }
     }
 
@@ -52,7 +78,7 @@ const Register = () => {
 
     return (
         <div className="register">
-            {console.log("User", user)}
+            {/* {console.log("User", user)} */}
             <h1>Register</h1>
             <input type="text" name="name" value={user.name} placeholder="Your Name" onChange={ handleChange }></input>
             <input type="text" name="email" value={user.email} placeholder="Your Email" onChange={ handleChange }></input>
