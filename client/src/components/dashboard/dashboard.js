@@ -53,6 +53,7 @@ export default function Dashboard(){
     function logOut()
     {
         setGlobUser(null);
+        localStorage.clear();
         nav('/');
     }
 
