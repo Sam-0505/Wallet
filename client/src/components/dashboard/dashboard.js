@@ -13,7 +13,7 @@ export default function Dashboard() {
   const [limit, setLimit] = useState(0);
   const [direc, setDirec] = useState(0);
   const [sortPar, setSortPar] = useState(0);
-  const [sortOrder, setSortOrder] = useState(0);
+  const [sortOrder, setSortOrder] = useState(1);
   const [collectionData, setCollectionData] = useState([]);
 
   const nav = useNavigate();
@@ -98,22 +98,6 @@ export default function Dashboard() {
     return "" + hour + ":" + min + ":" + slots[2];
   }
 
-  const filterAmount = (e) => {
-    var limit = e.target.value;
-    setLimit(limit);
-    const result = transData.filter((trans) => trans.amount > limit);
-    setCollectionData(result);
-  };
-
-  const filterDirection = (e) => {
-    var pt = e.target.value;
-    setDirec(pt);
-  };
-
-  const sortTrans = (e) => {
-    setSortPar(e.target.value);
-  };
-
   useEffect(() => {
     var res;
 
@@ -132,6 +116,8 @@ export default function Dashboard() {
       res = res.sort(function (a, b) {
         return (a.amount - b.amount) * sortOrder;
       });
+    } else {
+      if (sortOrder == -1) res = res.reverse();
     }
 
     setCollectionData(res);
@@ -179,13 +165,13 @@ export default function Dashboard() {
         <h1>Transaction Data</h1>
         {"FILTER BY: "}
         {"Transaction type: "}
-        <select onChange={filterDirection}>
+        <select onChange={(e) => setDirec(e.target.value)}>
           <option value="0">All transactions</option>
           <option value="-1">Recevied</option>
           <option value="1">Sent</option>
         </select>
         {" Amount: "}
-        <select onChange={filterAmount}>
+        <select onChange={(e) => setLimit(e.target.value)}>
           <option value="0">All transactions</option>
           <option value="50">Greater than 50</option>
           <option value="30">Greater than 30</option>
@@ -193,7 +179,7 @@ export default function Dashboard() {
         </select>
         <p>
           SORT BY:{" "}
-          <select onChange={sortTrans}>
+          <select onChange={(e) => setSortPar(e.target.value)}>
             <option value="0">Date</option>
             <option value="1">Amount</option>
           </select>

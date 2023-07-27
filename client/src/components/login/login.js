@@ -6,6 +6,7 @@ import { UserContext } from "../userContext";
 
 const Login = ({ setLoginUser }) => {
   const { globUser, setGlobUser } = useContext(UserContext);
+  const [errors, setErrors] = useState({});
 
   const nav = useNavigate();
 
@@ -23,17 +24,34 @@ const Login = ({ setLoginUser }) => {
   };
 
   const login = () => {
-    axios
-      .post("http://localhost:9002/login", user, { withCredentials: true })
-      .then((res) => {
-        if (res.data != "Invalid Credentials") {
-          setGlobUser(res.data.userData);
-          localStorage.setItem("token", JSON.stringify(res.data.userToken));
-          nav("/dashboard");
-        } else {
-          alert(res.data.userData);
-        }
-      });
+    let err = {};
+
+    if (!user.email) {
+      err.email = "Please fill the email";
+    }
+
+    if (!user.password) {
+      err.pass = "Please fill the password";
+    }
+
+    setErrors(err);
+
+    if (Object.keys(err).length === 0) {
+      axios
+        .post("http://localhost:9002/login", user, { withCredentials: true })
+        .then((res) => {
+          if (res.status == 200) {
+            setGlobUser(res.data.userData);
+            localStorage.setItem("token", JSON.stringify(res.data.userToken));
+            nav("/dashboard");
+          } else {
+            alert(res.data.userData);
+          }
+        })
+        .catch((err) => {
+          setErrors({ pass: err.response.data });
+        });
+    }
   };
 
   const home = () => {
@@ -50,6 +68,9 @@ const Login = ({ setLoginUser }) => {
         onChange={handleChange}
         placeholder="Enter your Email"
       ></input>
+      {errors.email && (
+        <p style={{ color: "red", fontSize: "13px" }}>{errors.email}</p>
+      )}
       <input
         type="password"
         name="password"
@@ -57,6 +78,9 @@ const Login = ({ setLoginUser }) => {
         onChange={handleChange}
         placeholder="Enter your Password"
       ></input>
+      {errors.pass && (
+        <p style={{ color: "red", fontSize: "13px" }}>{errors.pass}</p>
+      )}
       <div className="button" onClick={login}>
         Login
       </div>

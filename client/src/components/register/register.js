@@ -73,7 +73,10 @@ const Register = () => {
         )
         .then((res) => {
           alert(res.data);
-          if (res.data == "You are registered") nav("/login");
+          if (res.data == 200) nav("/login");
+        })
+        .catch((err) => {
+          setErrors({ email: err.response.data });
         });
     }
   };
