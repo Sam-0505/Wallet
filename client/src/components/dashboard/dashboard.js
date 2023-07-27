@@ -38,7 +38,8 @@ export default function Dashboard() {
         transData[i].destination != globUser.email &&
         res.indexOf(transData[i].destination) == -1 &&
         transData[i].destination.startsWith(send.sendEmail) &&
-        res.length < 5
+        res.length < 5 &&
+        transData[i].destination != send.sendEmail
       ) {
         res.push(transData[i].destination);
       }
@@ -139,7 +140,9 @@ export default function Dashboard() {
             <div
               className="dropdown-row"
               key={index}
-              onClick={(e) => console.log(e.target.textContent)}
+              onClick={(e) =>
+                setSend({ ...send, sendEmail: e.target.textContent })
+              }
             >
               {item}
             </div>
