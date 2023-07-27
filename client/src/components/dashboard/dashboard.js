@@ -18,10 +18,19 @@ export default function Dashboard() {
 
   const nav = useNavigate();
 
+  const [errors, setErrors] = useState({});
+
   const [send, setSend] = useState({
     sendEmail: "",
     sendAmount: 0,
   });
+
+  var j = document.getElementsByName("sendEmail");
+  if (j.length) {
+    j[0].addEventListener("focusout", (event) => {
+      setSug([]);
+    });
+  }
 
   //console.log(globUser);
 
@@ -52,18 +61,34 @@ export default function Dashboard() {
 
   function sendMoney() {
     //console.log(sug);
-    axios
-      .post(
-        "http://localhost:9002/sendMoney",
-        { globUser, send },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        if (res.data === "Transaction Completed") {
-          setCurrBal(currBal - send.sendAmount);
-        }
-        alert(res.data);
-      });
+    let err = {};
+
+    if (!send.sendEmail) {
+      err.email = "Please fill the email";
+    }
+
+    if (!send.sendAmount) {
+      err.money = "Please fill the amount";
+    }
+
+    setErrors(err);
+    if (Object.keys(err).length === 0) {
+      axios
+        .post(
+          "http://localhost:9002/sendMoney",
+          { globUser, send },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            setCurrBal(currBal - send.sendAmount);
+            alert(res.data);
+          }
+        })
+        .catch((err) => {
+          setErrors({ email: err.response.data });
+        });
+    }
   }
 
   useEffect(() => {
@@ -150,6 +175,9 @@ export default function Dashboard() {
           ))}
         </div>
       )}
+      {errors.email && (
+        <p style={{ color: "red", fontSize: "13px" }}>{errors.email}</p>
+      )}
       <input
         type="text"
         name="sendAmount"
@@ -157,6 +185,9 @@ export default function Dashboard() {
         onChange={handleChange}
         placeholder="Enter Amount"
       ></input>
+      {errors.money && (
+        <p style={{ color: "red", fontSize: "13px" }}>{errors.money}</p>
+      )}
       <div className="button" onClick={sendMoney}>
         Send Money
       </div>

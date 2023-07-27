@@ -137,7 +137,7 @@ app.post("/sendMoney", async (req, res) => {
     const receiver = await userModel.findOne({ email: send.sendEmail });
 
     if (!receiver) {
-      return res.send("No receiver exsits");
+      return res.status(400).send("No receiver exsits");
     }
 
     const receiveMoney = await userModel.findOne({
@@ -146,7 +146,7 @@ app.post("/sendMoney", async (req, res) => {
     });
 
     if (!receiveMoney) {
-      return res.send("Sender does not have enough money");
+      return res.status(400).send("Your balance is low!!");
     }
 
     await userModel
@@ -171,7 +171,7 @@ app.post("/sendMoney", async (req, res) => {
         destination: send.sendEmail,
         amount: send.sendAmount,
       })
-      .then((transData) => res.json("Transaction Completed"))
+      .then((transData) => res.status(200).json("Transaction Completed"))
       .catch((err) => res.json(err));
   } catch (err) {
     res.json(err);

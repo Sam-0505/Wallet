@@ -72,8 +72,10 @@ const Register = () => {
           { withCredentials: true }
         )
         .then((res) => {
-          alert(res.data);
-          if (res.data == 200) nav("/login");
+          if (res.status == 200) {
+            alert(res.data);
+            nav("/login");
+          }
         })
         .catch((err) => {
           setErrors({ email: err.response.data });
