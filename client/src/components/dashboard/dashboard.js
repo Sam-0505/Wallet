@@ -12,6 +12,8 @@ export default function Dashboard() {
 
   const [limit, setLimit] = useState(0);
   const [direc, setDirec] = useState(0);
+  const [sortPar, setSortPar] = useState(0);
+  const [sortOrder, setSortOrder] = useState(0);
   const [collectionData, setCollectionData] = useState([]);
 
   const nav = useNavigate();
@@ -108,6 +110,10 @@ export default function Dashboard() {
     setDirec(pt);
   };
 
+  const sortTrans = (e) => {
+    setSortPar(e.target.value);
+  };
+
   useEffect(() => {
     var res;
 
@@ -119,8 +125,17 @@ export default function Dashboard() {
       res = transData.filter((trans) => trans.destination == globUser.email);
     }
 
-    setCollectionData(res.filter((trans) => trans.amount > limit));
-  }, [limit, direc]);
+    res = res.filter((trans) => trans.amount > limit);
+
+    if (Number(sortPar) == 1) {
+      console.log(sortPar);
+      res = res.sort(function (a, b) {
+        return (a.amount - b.amount) * sortOrder;
+      });
+    }
+
+    setCollectionData(res);
+  }, [limit, direc, sortPar, sortOrder]);
 
   return (
     <div className="dashboard">
@@ -162,7 +177,7 @@ export default function Dashboard() {
       {/* <div className="button" onClick={showTrans}>Show Transactions</div> */}
       <div>
         <h1>Transaction Data</h1>
-        {"FILTERS: "}
+        {"FILTER BY: "}
         {"Transaction type: "}
         <select onChange={filterDirection}>
           <option value="0">All transactions</option>
@@ -176,6 +191,17 @@ export default function Dashboard() {
           <option value="30">Greater than 30</option>
           <option value="10">Greater than 10</option>
         </select>
+        <p>
+          SORT BY:{" "}
+          <select onChange={sortTrans}>
+            <option value="0">Date</option>
+            <option value="1">Amount</option>
+          </select>
+          <select onChange={(e) => setSortOrder(e.target.value)}>
+            <option value="1">Ascending</option>
+            <option value="-1">Descending</option>
+          </select>
+        </p>
         <table cellPadding="5" cellSpacing="5">
           <thead>
             <tr>
